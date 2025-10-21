@@ -5,21 +5,22 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: "https://github.com/cioban/argocd-app1.git"
-    targetRevision: "main"
-    path: "helm/chart"
-    helm:
-      # If you add a values-production.yaml in the chart directory (or repo), list it here:
-      valueFiles:
-        - helm/values/values-prod.yaml
+  sources:
+    - repoURL: "https://github.com/cioban/argocd-app1.git"
+      targetRevision: "main"
+      path: "helm/chart"
+      helm:
+        valueFiles:
+        - $values/helm/values/values-prod.yaml
+    - repoURL: 'https://github.com/cioban/argocd-app1.git'
+      targetRevision: main
+      ref: values
     # Example below is for a helm-chart deployed from a helm repository
     # using the values file from a git repository 
-    # This would not work with git, we need to pack and push the helm charts
-    # to a helm repo like Gitlab package registry or
+    # Using helm chart direct definition would not work with git,
+    # as we need to pack and push the helm charts to a helm repo like Gitlab package registry or
     # to a container registry that suports helm packages, like ECR
     #
-    #sources:
     #- repoURL: "https://github.com/cioban/argocd-app1/helm/chart/"
     #  chart: app1
     #  targetRevision: 0.1.0
