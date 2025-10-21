@@ -10,14 +10,14 @@ data:
     <html>
       <head>
         <meta charset="utf-8"/>
-        <title>nginx - PROD</title>
+        <title>nginx - PROD - KUSTOMIZE</title>
         <style>
           body { font-family: Arial, sans-serif; margin: 2rem; }
           h1 { color: #2b6cb0; }
         </style>
       </head>
       <body>
-        <h1>Hello from nginx served via ConfigMap - PROD</h1>
+        <h1>Hello from nginx served via ConfigMap - PROD - KUSTOMIZE</h1>
         <p>This index.html comes from a Kubernetes ConfigMap mounted into the pod.</p>
       </body>
     </html>
