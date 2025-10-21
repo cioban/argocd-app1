@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app1-helm-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/cioban/argocd-app1.git"
+    targetRevision: "main"
+    path: "helm/chart"
+    helm:
+      # If you add a values-production.yaml in the chart directory (or repo), list it here:
+      valueFiles:
+        - helm/values/values-staging.yaml
+    # Example below is for a helm-chart deployed from a helm repository
+    # using the values file from a git repository 
+    # This would not work with git, we need to pack and push the helm charts
+    # to a helm repo like Gitlab package registry or
+    # to a container registry that suports helm packages, like ECR
+    #
+    #sources:
+    #- repoURL: "https://github.com/cioban/argocd-app1/helm/chart/"
+    #  chart: app1
+    #  targetRevision: 0.1.0
+    #  helm:
+    #    valueFiles:
+    #      - $values/helm/values/values-staging.yaml
+    #- repoURL: 'https://github.com/cioban/argocd-app1.git'
+    #  targetRevision: main
+    #  ref: values
+  destination:
+    # Deploy into the in-cluster Kubernetes API (default ArgoCD cluster)
+    server: "https://kubernetes.default.svc"
+    namespace: app1-helm-staging
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true        # remove resources that are no longer declared in Git
+      selfHeal: true     # revert manual changes
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
