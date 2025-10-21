@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nginx-configmap.fullname" . }}-svc
+  labels:
+    app: {{ include "nginx-configmap.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "nginx-configmap.fullname" . }}
+  ports:
+  - name: http
+    port: {{ .Values.service.port }}
+    targetPort: http

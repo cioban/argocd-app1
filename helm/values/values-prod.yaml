@@ -1,0 +1,24 @@
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: stable-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# The index.html content served by nginx. You can override this with --set-file or in your values file.
+indexHtml: |
+  <!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>nginx from ConfigMap - PROD HELM</title>
+    </head>
+    <body>
+      <h1>Hello from ConfigMap-mounted index.html - PROD HELM</h1>
+      <p>Served by nginx in a Deployment.</p>
+    </body>
+  </html>

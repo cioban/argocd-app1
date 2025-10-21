@@ -1,0 +1,10 @@
+1. The index.html content is stored in a ConfigMap and mounted into nginx.
+2. To install the chart:
+   helm install <release-name> ./nginx-configmap-chart
+3. To override the index.html from a file:
+   helm install <release> ./nginx-configmap-chart --set-file indexHtml=./index.html
+4. To view service:
+   kubectl get svc -l app={{ .Release.Name }}
+5. To port-forward locally:
+   kubectl port-forward svc/{{ include "nginx-configmap.fullname" . }}-svc 8080:{{ .Values.service.port }}
+   then open http://localhost:8080

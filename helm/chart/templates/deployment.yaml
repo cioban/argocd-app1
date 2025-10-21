@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nginx-configmap.fullname" . }}
+  labels:
+    app: {{ include "nginx-configmap.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "nginx-configmap.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "nginx-configmap.fullname" . }}
+      annotations:
+        checksum/index-html: "{{ include "nginx-configmap.indexHtmlChecksum" . }}"
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: index-html
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 2
+          periodSeconds: 5
+      volumes:
+      - name: index-html
+        configMap:
+          name: {{ include "nginx-configmap.fullname" . }}-index
+          items:
+          - key: index.html
+            path: index.html
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
